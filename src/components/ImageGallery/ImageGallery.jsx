@@ -1,15 +1,19 @@
 import PropTypes from 'prop-types';
 import ImageGalleryItem from '../ImageGalleryItem';
+import {
+  StyledImageGallery,
+  StyledImageGalleryItem,
+} from './ImageGallery.styled';
 
-const ImageGallery = ({ pictures }) => {
+const ImageGallery = ({ pictures, onClick }) => {
   return (
-    <ul>
+    <StyledImageGallery>
       {pictures.map(picture => (
-        <li key={picture.id}>
-          <ImageGalleryItem picture={picture} />
-        </li>
+        <StyledImageGalleryItem key={picture.id}>
+          <ImageGalleryItem picture={picture} onClick={onClick} />
+        </StyledImageGalleryItem>
       ))}
-    </ul>
+    </StyledImageGallery>
   );
 };
 
@@ -21,6 +25,7 @@ ImageGallery.propTypes = {
       tags: PropTypes.string.isRequired,
     })
   ),
+  onClick: PropTypes.func.isRequired,
 };
 
 export default ImageGallery;

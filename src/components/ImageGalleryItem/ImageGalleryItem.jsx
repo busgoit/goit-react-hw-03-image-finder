@@ -1,7 +1,14 @@
 import PropTypes from 'prop-types';
+import { Image } from './ImageGalleryItem.styled';
 
-const ImageGalleryItem = ({ picture }) => {
-  return <img src={picture.webformatURL} alt={picture.tags} />;
+const ImageGalleryItem = ({ picture, onClick }) => {
+  return (
+    <Image
+      onClick={() => onClick(picture)}
+      src={picture.webformatURL}
+      alt={picture.tags}
+    />
+  );
 };
 
 ImageGalleryItem.propTypes = {
@@ -9,6 +16,7 @@ ImageGalleryItem.propTypes = {
     webformatURL: PropTypes.string.isRequired,
     tags: PropTypes.string.isRequired,
   }),
+  onClick: PropTypes.func.isRequired,
 };
 
 export default ImageGalleryItem;

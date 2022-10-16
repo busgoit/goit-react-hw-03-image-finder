@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import API from '../services';
 import Searchbar from './Searchbar';
-import Oval from './Loader';
+import Loader from './Loader';
 import ImageGallery from './ImageGallery';
 import Button from './Button';
-// import Modal from './Modal';
+import Modal from './Modal';
 
 export class App extends Component {
   state = {
@@ -13,6 +13,8 @@ export class App extends Component {
     searchQuery: '',
     isLoading: false,
     error: null,
+    showModal: false,
+    modalPicture: null,
   };
 
   async componentDidUpdate(_, prevState) {
@@ -21,15 +23,22 @@ export class App extends Component {
     const prevQuery = prevState.searchQuery;
     const prevPage = prevState.page;
     const prevPictures = prevState.pictures;
+    const isPrevQuery = prevQuery !== searchQuery;
 
-    if (prevQuery !== searchQuery || prevPage !== page) {
+    if (isPrevQuery || prevPage !== page) {
       this.setState({ isLoading: true });
 
       try {
         const pictures = await API.fetchImagesWithQuery(searchQuery, page);
-        this.setState({ pictures: [...prevPictures, ...pictures] });
+        this.setState({
+          pictures: isPrevQuery
+            ? [...pictures]
+            : [...prevPictures, ...pictures],
+        });
       } catch (error) {
-        this.setState({ error });
+        this.setState({
+          error: `Your pictures for ${searchQuery} were not found.`,
+        });
       } finally {
         this.setState({ isLoading: false });
       }
@@ -50,18 +59,32 @@ export class App extends Component {
     }));
   };
 
+  getModalImg = picture => {
+    this.setState({ modalPicture: picture });
+    this.toggleModal();
+  };
+
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
+  };
+
   render() {
-    const { pictures, isLoading } = this.state;
+    const { pictures, isLoading, showModal, modalPicture } = this.state;
     const isPictures = pictures && pictures.length > 0 && !isLoading;
 
     return (
       <>
         <Searchbar onFormSubmit={this.onFormSubmit} />
-        {isLoading && <Oval />}
-        {!isPictures && <p>Enter search query</p>}
-        {isPictures && <ImageGallery pictures={pictures} />}
+        {isLoading && <Loader />}
+        {isPictures && (
+          <ImageGallery onClick={this.getModalImg} pictures={pictures} />
+        )}
         {isPictures && <Button onLoadMoreBtnClick={this.onLoadMoreButton} />}
-        {/* <Modal /> */}
+        {showModal && (
+          <Modal onClose={this.toggleModal} picture={modalPicture} />
+        )}
       </>
     );
   }

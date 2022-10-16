@@ -7,7 +7,7 @@ const SEARCH_FILTER = 'image_type=photo&orientation=horizontal&safesearch=true';
 
 export const fetchImagesWithQuery = async (searchQuery, page) => {
   const response = await axios.get(
-    `/?key=${API_KEY}&q=${searchQuery}&${SEARCH_FILTER}&per_page=5&page=${page}`
+    `/?key=${API_KEY}&q=${searchQuery}&${SEARCH_FILTER}&per_page=12&page=${page}`
   );
 
   return response.data.hits;

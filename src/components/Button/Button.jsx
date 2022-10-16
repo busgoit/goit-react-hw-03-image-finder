@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { LoadMoreButton } from './Button.styled';
 
 const Button = props => {
   return (
-    <button onClick={props.onLoadMoreBtnClick} type="button">
+    <LoadMoreButton onClick={props.onLoadMoreBtnClick} type="button">
       Load more
-    </button>
+    </LoadMoreButton>
   );
 };
 
