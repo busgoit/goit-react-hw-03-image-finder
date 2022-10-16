@@ -8,23 +8,26 @@ import Button from './Button';
 
 export class App extends Component {
   state = {
-    pictures: null,
+    pictures: [],
     searchQuery: '',
+    page: 1,
     isLoading: false,
     error: null,
   };
 
-  async componentDidUpdate(prevProps, prevState) {
-    const { searchQuery } = this.state;
+  async componentDidUpdate(_, prevState) {
+    const { searchQuery, page } = this.state;
 
     const prevQuery = prevState.searchQuery;
+    const prevPage = prevState.page;
+    const prevPictures = prevState.pictures;
 
-    if (prevQuery !== searchQuery) {
+    if (prevQuery !== searchQuery || prevPage !== page) {
       this.setState({ isLoading: true });
 
       try {
-        const pictures = await API.fetchImagesWithQuery(searchQuery);
-        this.setState({ pictures });
+        const pictures = await API.fetchImagesWithQuery(searchQuery, page);
+        this.setState({ pictures: [...prevPictures, ...pictures] });
       } catch (error) {
         this.setState({ error });
       } finally {
@@ -34,12 +37,22 @@ export class App extends Component {
   }
 
   onFormSubmit = inputValue => {
-    this.setState({ searchQuery: inputValue });
+    this.setState({
+      pictures: [],
+      page: 1,
+      searchQuery: inputValue,
+    });
+  };
+
+  onLoadMoreButton = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
   };
 
   render() {
     const { pictures, isLoading } = this.state;
-    const isPictures = pictures && pictures.length > 0 && !isLoading;
+    const isPictures = pictures.length > 0 && !isLoading;
 
     return (
       <>
@@ -47,7 +60,7 @@ export class App extends Component {
         {isLoading && <Oval />}
         {!isPictures && <p>Enter search query</p>}
         {isPictures && <ImageGallery pictures={pictures} />}
-        {isPictures && <Button />}
+        {isPictures && <Button onLoadMoreBtnClick={this.onLoadMoreButton} />}
         {/* <Modal /> */}
       </>
     );
