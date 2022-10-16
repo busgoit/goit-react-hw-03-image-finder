@@ -9,8 +9,8 @@ import Button from './Button';
 export class App extends Component {
   state = {
     pictures: [],
-    searchQuery: '',
     page: 1,
+    searchQuery: '',
     isLoading: false,
     error: null,
   };
@@ -52,7 +52,7 @@ export class App extends Component {
 
   render() {
     const { pictures, isLoading } = this.state;
-    const isPictures = pictures.length > 0 && !isLoading;
+    const isPictures = pictures && pictures.length > 0 && !isLoading;
 
     return (
       <>
