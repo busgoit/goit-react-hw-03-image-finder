@@ -36,7 +36,6 @@ export class App extends Component {
         const pictures = data.hits;
         const totalPages = Math.ceil(data.total / perPage);
         const isLastPage = page === totalPages ? true : false;
-        console.log(isLastPage);
 
         this.setState({
           pictures: isPrevQuery
